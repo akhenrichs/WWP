@@ -1,0 +1,47 @@
+library(tm)
+setwd("/Users/ahenrichs/Desktop/WWO/WWO/Wroth and Sidney Herbert/txt files")
+getwd()
+filenames <- list.files(getwd(),pattern="*.txt")
+filenames
+#create corpus
+files<-lapply(filenames,readLines)
+warnings()
+files
+docs<-Corpus(VectorSource(files))
+writeLines(as.character(docs[[1]]))
+
+#clean corpus, including regularizing special characters
+toSpace <- content_transformer(function(x, pattern) {return (gsub(pattern, " ", x))})
+docs<-tm_map(docs,content_transformer(tolower))
+
+writeLines(as.character(docs[[2]]))
+toAE<-content_transformer(function(x, pattern){return(gsub(pattern,"ae",x))})
+toApostrophe<-content_transformer(function(x, pattern) {return (gsub(pattern, " ", x))})
+docs<-tm_map(docs, toAE, "ã¦")
+docs<-tm_map(docs, toApostrophe, "â€™")
+writeLines(as.character(docs[[2]]))
+options(max.print = 1000000)
+docs<-tm_map(docs, removePunctuation)
+docs<-tm_map(docs, removeNumbers)
+docs<-tm_map(docs, toSpace, "â€œ")
+docs<-tm_map(docs, toSpace, "page")
+docs<-tm_map(docs, stripWhitespace)
+docs<-tm_map(docs, toSpace, "filename")
+docs<-tm_map(docs, toSpace, "â€")
+
+docs<-tm_map(docs, toSpace, "fakesidneyantoniexml")
+docs<-tm_map(docs, toSpace, "msidneyenw")
+docs<-tm_map(docs, toSpace, "rgarnierpbo")
+docs<-tm_map(docs, toSpace, "fakesidneydiscoursexml")
+docs<-tm_map(docs, toSpace, "pmornayjvp")
+docs<-tm_map(docs, toSpace, "fakewrothuraniaxml")
+docs<-tm_map(docs, toSpace, "mwrothzoq")
+docs<-tm_map(docs, toSpace, "ttr")
+docs<-tm_map(docs, toSpace, "tauthor")
+docs<-tm_map(docs, toSpace, "pidtpub")
+docs<-tm_map(docs, toSpace, "datetfull")
+docs<-tm_map(docs, toSpace, "ttrt")
+
+?writeCorpus()
+writeCorpus(docs, path = "/Users/ahenrichs/Desktop/WWO/WWO/Wroth and Sidney Herbert/FINAL complete cleaned files WITH stopwords", filenames)
+writeLines(as.character(docs[7]))
